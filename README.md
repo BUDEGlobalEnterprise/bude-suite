@@ -13,8 +13,10 @@ proprietary data layer: every mutation lands on a standard ERPNext record.
 
 ## Product preview
 
-*Mockups with fictional data — no real customer, employee, or business
-records. They show the UI this API layer is built to power.*
+*Reference design mockups, not screenshots of the shipped app — the actual
+screens may differ. Fictional data throughout: no real customer, employee,
+or business records. Shown to illustrate the UI this API layer is built to
+power.*
 
 ### Inventory
 
