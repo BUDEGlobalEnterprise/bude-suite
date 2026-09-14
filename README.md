@@ -73,6 +73,32 @@ power.*
 </tr>
 </table>
 
+## Live demo
+
+A public, read-only login on the pilot ERPNext site, for browsing the real
+apps rather than the mockups above.
+
+| | |
+|---|---|
+| Server URL | `https://erp1.budeglobal.in` |
+| Username | `demo@budeglobal.in` |
+| Password | `jVHoCW8igy1AvCjNBovv` |
+
+**This account cannot write.** It holds the same operational roles a real
+Stock/HR/Sales/Helpdesk user would (so the apps' navigation renders
+normally), but every create, update, submit, delete and cancel is denied at
+the request level regardless of what those roles would otherwise allow —
+enforced in [`services/common/demo_readonly.py`](bude_api/services/common/demo_readonly.py),
+independent of the roles' own permissions, so real staff holding the same
+roles are unaffected. A handful of doctypes (Salary Slip, Payment Entry,
+User, and a few others) are blocked from this account even for reading.
+Anything not explicitly allow-listed is denied by default, including
+endpoints this file doesn't know about — see that module's docstring for
+what was tried first and why it didn't work.
+
+Use it to log into the web builds below, or point a fresh install of the
+mobile apps at that server URL.
+
 ## Status
 
 Production-oriented API layer for the Bude inventory, HR, helpdesk, and sales

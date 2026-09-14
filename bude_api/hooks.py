@@ -34,6 +34,14 @@ scheduler_events = {
 
 _bump_version = "bude_api.services.mobile_permissions.versioning.bump_app_version"
 
+# Demotes the public demo login (see services/common/demo_readonly.py) to
+# read-only, independent of any role's own permissions -- real staff holding
+# the same roles are unaffected. Enforced at the request level (an allowlist
+# of exact bude_api.api.* paths, GET-only on the generic REST API): a
+# has_permission hook was tried first and does not work for this, see that
+# module's docstring for why.
+before_request = "bude_api.services.common.demo_readonly.before_request"
+
 doc_events = {
     "Lead": {"on_update": "bude_api.services.sales_crm.reminders.on_crm_record_update"},
     "Opportunity": {"on_update": "bude_api.services.sales_crm.reminders.on_crm_record_update"},
