@@ -1,6 +1,6 @@
 # Bude Suite — Backend (`bude_api`)
 
-Copyright (C) 2026 Bude Global Enterprises. Licensed under the [GNU GPLv3](LICENSE).
+Copyright (C) 2026 [Bude Global Enterprises](https://www.budeglobal.in/). Licensed under the [GNU GPLv3](LICENSE). Developed by [Aravind Govindhasamy](https://aravind-govindhasamy.github.io/). See [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
 Server-side extension for an ERPNext / Frappe site. Exposes whitelisted API methods that the Bude mobile app suite calls; **never** modifies ERPNext standard DocTypes.
 
