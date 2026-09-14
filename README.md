@@ -216,6 +216,17 @@ customer address. Offline visits remain clearly marked as unverified until
 synced. Tune the two distance settings for the operating environment rather
 than lowering them simply to remove validation failures.
 
-The commercial pilot runbook (rollout, permissions, acceptance criteria,
-support, and packaging) lives alongside the mobile app source and is not
-part of this repository.
+See [the commercial pilot runbook](docs/sales/bude-sales-commercial-pilot.md)
+for rollout, permissions, acceptance criteria, support, and packaging.
+
+## More documentation
+
+- [Product overview](docs/PRODUCT.md) — the full showcase guide covering all four apps: workflows, hardware support, demo script, training labs
+- [Roadmap](docs/roadmap/inventory.md) ([V2](docs/roadmap/inventory-v2.md)) — Inventory app
+- [HR roadmap](docs/roadmap/hr.md) ([V2](docs/roadmap/hr-v2.md))
+- [Architecture overview](docs/architecture/overview.md) · [development guidelines](docs/architecture/development-guidelines.md) · [Hardware Abstraction Layer design](docs/architecture/hal-design.md) · [service-cloud architecture](docs/architecture/bude_service_cloud_architecture.md) · [4-app ERPNext usability audit](docs/architecture/four-app-erpnext-usability-audit.md)
+- [API standards](docs/api-specifications/api-standards.md)
+- [Hardware integration roadmap](docs/hardware-roadmap/integration-roadmap.md)
+- [Helpdesk market roadmap](docs/helpdesk/market-roadmap.md) and release notes: [0.3](docs/helpdesk/release-0.3.md) · [0.4](docs/helpdesk/release-0.4.md) · [0.5](docs/helpdesk/release-0.5.md)
+- [Field sales market roadmap](docs/sales/field-sales-market-roadmap.md) · [commercial pilot runbook](docs/sales/bude-sales-commercial-pilot.md)
+- [UI continuation notes](docs/ui/UI_CONTINUATION.md)
