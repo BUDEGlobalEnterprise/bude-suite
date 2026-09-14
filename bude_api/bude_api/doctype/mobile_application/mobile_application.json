@@ -1,0 +1,87 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "field:app_key",
+ "creation": "2026-08-06 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "app_key",
+  "app_name",
+  "is_active",
+  "permission_version",
+  "description"
+ ],
+ "fields": [
+  {
+   "fieldname": "app_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "App Key",
+   "reqd": 1,
+   "unique": 1,
+   "description": "Stable identifier used as the permission-code prefix, e.g. 'inventory'. Do not change once screens exist."
+  },
+  {
+   "fieldname": "app_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "App Name",
+   "reqd": 1
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Active"
+  },
+  {
+   "default": "1",
+   "fieldname": "permission_version",
+   "fieldtype": "Int",
+   "label": "Permission Version",
+   "read_only": 1,
+   "description": "Auto-incremented whenever any screen/role/override for this app changes. Clients refetch when it moves."
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Small Text",
+   "label": "Description"
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-08-06 00:00:00",
+ "module": "Bude API",
+ "name": "Mobile Application",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Mobile Permission Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

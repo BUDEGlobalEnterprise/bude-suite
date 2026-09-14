@@ -1,0 +1,12 @@
+[pre_model_sync]
+
+[post_model_sync]
+# Seed the helpdesk mobile screen registry + role permissions (pilot app).
+# v2: role grants moved to a Mobile App Screen child table (better Desk UX).
+bude_api.patches.seed_helpdesk_mobile_screens_v2
+# Seed the HR mobile screen registry + role permissions (Stage 5).
+bude_api.patches.seed_hr_mobile_screens
+# Seed the Sales mobile screen registry + role permissions (Stage 5).
+bude_api.patches.seed_sales_mobile_screens
+# Seed the Inventory mobile screen registry + role permissions (Stage 5).
+bude_api.patches.seed_inventory_mobile_screens

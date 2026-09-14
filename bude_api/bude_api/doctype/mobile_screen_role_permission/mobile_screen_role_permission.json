@@ -1,0 +1,38 @@
+{
+ "actions": [],
+ "creation": "2026-08-06 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "istable": 1,
+ "field_order": [
+  "role",
+  "is_active",
+  "can_view",
+  "can_create",
+  "can_edit",
+  "can_delete",
+  "can_approve",
+  "can_export"
+ ],
+ "fields": [
+  {"fieldname": "role", "fieldtype": "Link", "in_list_view": 1, "label": "Role", "options": "Role", "reqd": 1},
+  {"default": "1", "fieldname": "is_active", "fieldtype": "Check", "in_list_view": 1, "label": "Active"},
+  {"default": "1", "fieldname": "can_view", "fieldtype": "Check", "in_list_view": 1, "label": "View"},
+  {"fieldname": "can_create", "fieldtype": "Check", "in_list_view": 1, "label": "Create"},
+  {"fieldname": "can_edit", "fieldtype": "Check", "in_list_view": 1, "label": "Edit"},
+  {"fieldname": "can_delete", "fieldtype": "Check", "in_list_view": 1, "label": "Delete"},
+  {"fieldname": "can_approve", "fieldtype": "Check", "in_list_view": 1, "label": "Approve"},
+  {"fieldname": "can_export", "fieldtype": "Check", "in_list_view": 1, "label": "Export"}
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-08-06 00:00:00",
+ "module": "Bude API",
+ "name": "Mobile Screen Role Permission",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

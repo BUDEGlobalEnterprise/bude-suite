@@ -1,0 +1,127 @@
+/* Public auth pages only. Other Frappe website routes remain unchanged. */
+body:has(.for-login),
+body:has(.for-forgot),
+body:has(.for-signup) {
+  min-height: 100vh;
+  color: #171b26;
+  background:
+    radial-gradient(circle at 82% 4%, #e0e7ff, transparent 32%),
+    #f5f7fb;
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.for-login,
+.for-forgot,
+.for-signup {
+  padding-top: clamp(44px, 8vh, 92px);
+}
+
+.for-login .page-card,
+.for-forgot .page-card,
+.for-signup .page-card {
+  max-width: 430px;
+  padding: 28px !important;
+  background: #fff !important;
+  border: 1px solid #dde2ea !important;
+  border-radius: 18px !important;
+  box-shadow: 0 18px 46px rgba(30, 48, 102, 0.13) !important;
+}
+
+.for-login .page-card-head h4,
+.for-forgot .page-card-head h4,
+.for-signup .page-card-head h4 {
+  color: #171b26;
+  font-size: 25px;
+  font-weight: 780;
+  letter-spacing: -0.04em;
+}
+
+.for-login .page-card-head h4::before {
+  content: "Bude Global Enterprises";
+  display: block;
+  margin-bottom: 9px;
+  color: #4169e1;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.for-login .form-control,
+.for-forgot .form-control,
+.for-signup .form-control {
+  min-height: 48px;
+  color: #171b26;
+  background: #f8f9fc !important;
+  border: 1px solid #dde2ea !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+.for-login .form-control:focus,
+.for-forgot .form-control:focus,
+.for-signup .form-control:focus {
+  border-color: #4169e1 !important;
+  box-shadow: 0 0 0 3px rgba(65, 105, 225, 0.16) !important;
+}
+
+.for-login .btn-login,
+.for-forgot .btn-primary,
+.for-signup .btn-primary {
+  min-height: 48px;
+  color: #fff !important;
+  background: #4169e1 !important;
+  border-color: #4169e1 !important;
+  border-radius: 12px !important;
+  font-weight: 720;
+  box-shadow: none !important;
+}
+
+.for-login a,
+.for-forgot a,
+.for-signup a {
+  color: #4169e1 !important;
+}
+
+.for-login .page-card-head img,
+.for-forgot .page-card-head img,
+.for-signup .page-card-head img {
+  width: 64px;
+  height: 64px;
+  padding: 12px;
+  object-fit: contain;
+  background: #4169e1;
+  border-radius: 18px;
+}
+
+@media (prefers-color-scheme: dark) {
+  body:has(.for-login),
+  body:has(.for-forgot),
+  body:has(.for-signup) {
+    color: #f1f4ff;
+    background:
+      radial-gradient(circle at 82% 4%, #1f357a, transparent 32%),
+      #0b1020;
+  }
+
+  .for-login .page-card,
+  .for-forgot .page-card,
+  .for-signup .page-card {
+    background: #12182a !important;
+    border-color: #344057 !important;
+  }
+
+  .for-login .page-card-head h4,
+  .for-forgot .page-card-head h4,
+  .for-signup .page-card-head h4 {
+    color: #f1f4ff;
+  }
+
+  .for-login .form-control,
+  .for-forgot .form-control,
+  .for-signup .form-control {
+    color: #f1f4ff;
+    background: #192136 !important;
+    border-color: #344057 !important;
+  }
+}
