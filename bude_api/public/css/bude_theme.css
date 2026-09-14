@@ -1,0 +1,461 @@
+/* Bude Global Enterprises — Frappe Desk visual system
+ * Kept selector-based so standard and custom DocTypes inherit the same UI.
+ */
+:root {
+  --bude-bg: #f5f7fb;
+  --bude-surface: #ffffff;
+  --bude-surface-soft: #f8f9fc;
+  --bude-ink: #171b26;
+  --bude-muted: #636b7d;
+  --bude-line: #dde2ea;
+  --bude-brand: #4169e1;
+  --bude-brand-hover: #3457d5;
+  --bude-brand-soft: #e0e7ff;
+  --bude-blue: #254f9b;
+  --bude-blue-soft: #e5f0fb;
+  --bude-amber: #b86808;
+  --bude-amber-soft: #fff0d8;
+  --bude-red: #bd3f48;
+  --bude-red-soft: #fde7e9;
+  --bude-radius-sm: 8px;
+  --bude-radius-md: 12px;
+  --bude-radius-lg: 16px;
+  --bude-shadow: 0 10px 28px rgba(30, 48, 102, 0.1);
+
+  --primary: var(--bude-brand);
+  --primary-color: var(--bude-brand);
+  --fg-color: var(--bude-surface);
+  --bg-color: var(--bude-bg);
+  --subtle-fg: var(--bude-surface-soft);
+  --card-bg: var(--bude-surface);
+  --border-color: var(--bude-line);
+  --text-color: var(--bude-ink);
+  --text-muted: var(--bude-muted);
+}
+
+[data-theme="dark"] {
+  --bude-bg: #0b1020;
+  --bude-surface: #12182a;
+  --bude-surface-soft: #192136;
+  --bude-ink: #f1f4ff;
+  --bude-muted: #aab3c7;
+  --bude-line: #344057;
+  --bude-brand: #8ea9ff;
+  --bude-brand-hover: #aec1ff;
+  --bude-brand-soft: #1f357a;
+  --bude-blue: #8fb9ff;
+  --bude-blue-soft: #1d3448;
+  --bude-amber: #f2b45f;
+  --bude-amber-soft: #3b2b15;
+  --bude-red: #ff8c93;
+  --bude-red-soft: #402326;
+  --bude-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+
+html,
+body,
+.desk-container,
+.page-container,
+.layout-main-section-wrapper {
+  background: var(--bude-bg);
+  color: var(--bude-ink);
+}
+
+body {
+  font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  letter-spacing: -0.01em;
+}
+
+/* Top navigation and page chrome */
+.navbar {
+  min-height: 62px;
+  background: color-mix(in srgb, var(--bude-surface) 96%, transparent) !important;
+  border-bottom: 1px solid var(--bude-line) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(16px);
+}
+
+.navbar .navbar-brand,
+.navbar .navbar-home,
+.navbar .nav-link {
+  color: var(--bude-ink) !important;
+}
+
+.navbar .navbar-brand::after {
+  content: "Bude Global Enterprises";
+  margin-left: 10px;
+  color: var(--bude-ink);
+  font-size: 14px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.page-head {
+  min-height: 70px;
+  background: color-mix(in srgb, var(--bude-surface) 96%, transparent) !important;
+  border-bottom: 1px solid var(--bude-line);
+  box-shadow: none !important;
+  backdrop-filter: blur(14px);
+}
+
+.page-head .page-title .title-text,
+.page-head h3,
+.workspace-title,
+.widget-title {
+  color: var(--bude-ink) !important;
+  font-weight: 750 !important;
+  letter-spacing: -0.03em;
+}
+
+/* Sidebar navigation */
+.desk-sidebar,
+.layout-side-section,
+.standard-sidebar {
+  background: var(--bude-bg) !important;
+}
+
+.standard-sidebar-item,
+.desk-sidebar-item,
+.module-sidebar-item {
+  min-height: 40px;
+  margin: 2px 6px;
+  border-radius: var(--bude-radius-md) !important;
+  color: var(--bude-muted) !important;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.standard-sidebar-item:hover,
+.desk-sidebar-item:hover,
+.module-sidebar-item:hover,
+.standard-sidebar-item.selected,
+.desk-sidebar-item.selected,
+.module-sidebar-item.selected {
+  color: var(--bude-brand) !important;
+  background: var(--bude-brand-soft) !important;
+}
+
+.sidebar-item-label,
+.standard-sidebar-label {
+  font-weight: 620;
+}
+
+/* Workspaces, dashboards and number cards */
+.layout-main-section,
+.frappe-card,
+.widget,
+.widget.dashboard-widget-box,
+.number-card,
+.dashboard-chart,
+.onboarding-widget-box {
+  background: var(--bude-surface) !important;
+  border: 1px solid var(--bude-line) !important;
+  border-radius: var(--bude-radius-lg) !important;
+  box-shadow: var(--bude-shadow);
+}
+
+.layout-main-section {
+  overflow: hidden;
+}
+
+.widget,
+.widget.dashboard-widget-box,
+.number-card,
+.dashboard-chart {
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.widget:hover,
+.number-card:hover {
+  transform: translateY(-1px);
+}
+
+.widget .widget-head,
+.widget .widget-title,
+.number-card .widget-title,
+.number-card .number {
+  color: var(--bude-ink) !important;
+}
+
+.widget .widget-subtitle,
+.number-card .number-card-label,
+.widget .text-muted {
+  color: var(--bude-muted) !important;
+}
+
+.shortcut-widget-box {
+  border-radius: var(--bude-radius-md) !important;
+  border-color: var(--bude-line) !important;
+  background: var(--bude-surface-soft) !important;
+}
+
+.shortcut-widget-box:hover {
+  border-color: var(--bude-brand) !important;
+  background: var(--bude-brand-soft) !important;
+}
+
+/* Forms */
+.form-layout,
+.form-page,
+.form-dashboard-section,
+.form-section,
+.section-body,
+.form-grid {
+  background: var(--bude-surface) !important;
+}
+
+.form-section,
+.form-dashboard-section {
+  border-color: var(--bude-line) !important;
+}
+
+.section-head,
+.form-section .section-head {
+  color: var(--bude-ink) !important;
+  font-weight: 700;
+}
+
+.control-label,
+.grid-heading-row,
+.form-group label {
+  color: var(--bude-muted) !important;
+  font-size: 11px;
+  font-weight: 680;
+  letter-spacing: 0.015em;
+}
+
+.form-control,
+.input-with-feedback,
+.awesomplete > input,
+.ql-editor,
+.ql-toolbar,
+.frappe-control .control-input input,
+.frappe-control .control-input textarea,
+.frappe-control .control-input select {
+  color: var(--bude-ink) !important;
+  background: var(--bude-surface-soft) !important;
+  border-color: var(--bude-line) !important;
+  border-radius: var(--bude-radius-md) !important;
+  box-shadow: none !important;
+}
+
+.form-control,
+.input-with-feedback,
+.frappe-control .control-input input,
+.frappe-control .control-input select {
+  min-height: 42px;
+}
+
+.form-control:focus,
+.input-with-feedback:focus,
+.awesomplete > input:focus,
+.ql-editor:focus,
+.frappe-control .control-input input:focus,
+.frappe-control .control-input textarea:focus,
+.frappe-control .control-input select:focus {
+  border-color: var(--bude-brand) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--bude-brand) 15%, transparent) !important;
+}
+
+.form-tabs-list,
+.form-tabs-sticky-down {
+  background: var(--bude-surface) !important;
+  border-color: var(--bude-line) !important;
+}
+
+.form-tabs-list .nav-link {
+  color: var(--bude-muted) !important;
+  font-weight: 620;
+}
+
+.form-tabs-list .nav-link.active {
+  color: var(--bude-brand) !important;
+  border-bottom-color: var(--bude-brand) !important;
+}
+
+/* Lists and reports */
+.list-row-head,
+.list-row-container,
+.list-row,
+.result,
+.dt-scrollable,
+.datatable .dt-header,
+.datatable .dt-row {
+  background: var(--bude-surface) !important;
+  border-color: var(--bude-line) !important;
+}
+
+.list-row-container {
+  transition: background-color 120ms ease;
+}
+
+.list-row-container:hover,
+.list-row:hover,
+.datatable .dt-row:hover .dt-cell {
+  background: var(--bude-surface-soft) !important;
+}
+
+.list-row-head {
+  color: var(--bude-muted) !important;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.list-subject a,
+.list-row a,
+.level-item.bold {
+  color: var(--bude-ink) !important;
+  font-weight: 650;
+}
+
+.report-wrapper,
+.datatable,
+.dt-scrollable {
+  border-radius: var(--bude-radius-md) !important;
+}
+
+/* Buttons and actions */
+.btn {
+  min-height: 36px;
+  border-radius: var(--bude-radius-md) !important;
+  font-weight: 650;
+  box-shadow: none !important;
+}
+
+.btn-primary,
+.btn-primary-dark,
+.primary-action {
+  color: #fff !important;
+  background: var(--bude-brand) !important;
+  border-color: var(--bude-brand) !important;
+}
+
+.btn-primary:hover,
+.btn-primary-dark:hover,
+.primary-action:hover {
+  background: var(--bude-brand-hover) !important;
+  border-color: var(--bude-brand-hover) !important;
+}
+
+.btn-default,
+.btn-secondary,
+.page-actions .btn-default {
+  color: var(--bude-ink) !important;
+  background: var(--bude-surface) !important;
+  border-color: var(--bude-line) !important;
+}
+
+.btn-default:hover,
+.btn-secondary:hover {
+  color: var(--bude-brand) !important;
+  background: var(--bude-brand-soft) !important;
+}
+
+/* Menus, dialogs and notifications */
+.dropdown-menu,
+.popover,
+.modal-content,
+.menu-list,
+.notifications-list {
+  color: var(--bude-ink) !important;
+  background: var(--bude-surface) !important;
+  border: 1px solid var(--bude-line) !important;
+  border-radius: var(--bude-radius-lg) !important;
+  box-shadow: var(--bude-shadow) !important;
+}
+
+.modal-header,
+.modal-footer,
+.dropdown-divider {
+  border-color: var(--bude-line) !important;
+}
+
+.dropdown-item,
+.menu-item {
+  color: var(--bude-ink) !important;
+  border-radius: var(--bude-radius-sm);
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus,
+.menu-item:hover {
+  color: var(--bude-brand) !important;
+  background: var(--bude-brand-soft) !important;
+}
+
+.alert,
+.msgprint-dialog .modal-content {
+  border-radius: var(--bude-radius-lg) !important;
+}
+
+/* Status semantics */
+.indicator-pill.green,
+.indicator-pill[data-indicator="green"],
+.badge-success {
+  color: var(--bude-brand) !important;
+  background: var(--bude-brand-soft) !important;
+}
+
+.indicator-pill.orange,
+.indicator-pill.yellow,
+.badge-warning {
+  color: var(--bude-amber) !important;
+  background: var(--bude-amber-soft) !important;
+}
+
+.indicator-pill.red,
+.badge-danger {
+  color: var(--bude-red) !important;
+  background: var(--bude-red-soft) !important;
+}
+
+.indicator-pill.blue,
+.badge-info {
+  color: var(--bude-blue) !important;
+  background: var(--bude-blue-soft) !important;
+}
+
+.indicator-pill,
+.badge {
+  border-radius: 999px !important;
+  font-weight: 680;
+}
+
+.avatar-frame,
+.avatar-empty,
+.avatar-small,
+.avatar-medium {
+  border-radius: var(--bude-radius-md) !important;
+}
+
+a,
+.text-primary {
+  color: var(--bude-brand);
+}
+
+.text-muted,
+.text-extra-muted {
+  color: var(--bude-muted) !important;
+}
+
+::selection {
+  color: var(--bude-ink);
+  background: var(--bude-brand-soft);
+}
+
+* {
+  scrollbar-color: var(--bude-line) transparent;
+  scrollbar-width: thin;
+}
+
+@media (max-width: 767px) {
+  .navbar .navbar-brand::after {
+    content: "Bude Global";
+    font-size: 12px;
+  }
+
+  .layout-main-section {
+    border-radius: var(--bude-radius-md) !important;
+  }
+}

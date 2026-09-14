@@ -1,0 +1,2 @@
+# Frappe + ERPNext are provided by the bench, do not pin here.
+# Add only extra dependencies needed by this app.

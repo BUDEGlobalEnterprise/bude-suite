@@ -1,0 +1,135 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "format:{app}.{screen_key}",
+ "creation": "2026-08-06 00:00:00",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "app",
+  "screen_key",
+  "permission_code",
+  "screen_name",
+  "route_path",
+  "module_name",
+  "menu_group",
+  "icon_name",
+  "sort_order",
+  "default_landing_priority",
+  "is_active",
+  "is_sensitive",
+  "allow_offline_access",
+  "description",
+  "role_permissions_section",
+  "role_permissions",
+  "user_overrides_section",
+  "user_overrides"
+ ],
+ "fields": [
+  {
+   "fieldname": "app",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "App",
+   "options": "Mobile Application",
+   "reqd": 1
+  },
+  {
+   "fieldname": "screen_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Screen Key",
+   "reqd": 1,
+   "description": "Stable identifier, e.g. 'stock_transfer'. Changing a display title must NOT change this. No dots."
+  },
+  {
+   "fieldname": "permission_code",
+   "fieldtype": "Data",
+   "label": "Permission Code",
+   "read_only": 1,
+   "description": "Generated as <app_key>.<screen_key>. Globally unique."
+  },
+  {
+   "fieldname": "screen_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Screen Name",
+   "reqd": 1
+  },
+  {
+   "fieldname": "route_path",
+   "fieldtype": "Data",
+   "label": "Route Path",
+   "reqd": 1
+  },
+  {"fieldname": "module_name", "fieldtype": "Data", "label": "Module Name"},
+  {"fieldname": "menu_group", "fieldtype": "Data", "label": "Menu Group"},
+  {"fieldname": "icon_name", "fieldtype": "Data", "label": "Icon Name"},
+  {"fieldname": "sort_order", "fieldtype": "Int", "label": "Sort Order"},
+  {
+   "fieldname": "default_landing_priority",
+   "fieldtype": "Int",
+   "label": "Default Landing Priority",
+   "description": "Lower number = preferred landing screen when the dashboard is not accessible."
+  },
+  {
+   "default": "1",
+   "fieldname": "is_active",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "label": "Is Active"
+  },
+  {
+   "fieldname": "is_sensitive",
+   "fieldtype": "Check",
+   "label": "Is Sensitive",
+   "description": "Sensitive screens fail closed when the offline cache is expired and the server is unreachable."
+  },
+  {
+   "fieldname": "allow_offline_access",
+   "fieldtype": "Check",
+   "label": "Allow Offline Access"
+  },
+  {"fieldname": "description", "fieldtype": "Small Text", "label": "Description"},
+  {
+   "fieldname": "role_permissions_section",
+   "fieldtype": "Section Break",
+   "label": "Role Permissions"
+  },
+  {
+   "fieldname": "role_permissions",
+   "fieldtype": "Table",
+   "label": "Role Permissions",
+   "options": "Mobile Screen Role Permission",
+   "description": "One row per role granted access to this screen. A role not listed here has no access via role membership (a user-level override can still grant it)."
+  },
+  {
+   "fieldname": "user_overrides_section",
+   "fieldtype": "Section Break",
+   "label": "User Overrides"
+  },
+  {
+   "fieldname": "user_overrides",
+   "fieldtype": "Table",
+   "label": "User Overrides",
+   "options": "Mobile Screen User Override",
+   "description": "Explicit per-user Allow/Deny for this screen. Deny always wins over any role grant."
+  }
+ ],
+ "index_web_pages_for_search": 0,
+ "links": [],
+ "modified": "2026-08-06 00:00:00",
+ "module": "Bude API",
+ "name": "Mobile App Screen",
+ "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "print": 1, "read": 1, "report": 1, "role": "System Manager", "share": 1, "write": 1},
+  {"create": 1, "delete": 1, "print": 1, "read": 1, "report": 1, "role": "Mobile Permission Manager", "share": 1, "write": 1}
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quotation response</title>
+  <style>
+    body { margin: 0; background: #f5f7f8; color: #182126; font: 16px system-ui, sans-serif; }
+    main { max-width: 620px; margin: 8vh auto; padding: 24px; }
+    article { background: white; border-radius: 18px; padding: 28px; box-shadow: 0 8px 30px #16222918; }
+    h1 { margin-top: 0; } .amount { font-size: 2rem; font-weight: 700; }
+    textarea { width: 100%; min-height: 100px; box-sizing: border-box; padding: 12px; }
+    .actions { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+    button { border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 650; cursor: pointer; }
+    .accept { background: #146c43; color: white; } .reject { background: #f0e6e6; color: #8b1d1d; }
+    .muted { color: #65747b; } #message { margin-top: 16px; font-weight: 600; }
+  </style>
+</head>
+<body>
+<main><article>
+  <h1>Quotation response</h1>
+  <div id="loading">Loading quotation…</div>
+  <section id="quote" hidden>
+    <p class="muted" id="customer"></p>
+    <h2 id="number"></h2>
+    <p class="amount" id="amount"></p>
+    <p class="muted" id="validity"></p>
+    <label for="notes">Message to the sales representative (optional)</label>
+    <textarea id="notes" maxlength="1000"></textarea>
+    <div class="actions">
+      <button class="accept" data-action="accept">Accept quotation</button>
+      <button class="reject" data-action="reject">Decline quotation</button>
+    </div>
+  </section>
+  <div id="message" role="status" aria-live="polite"></div>
+</article></main>
+<script>
+const query = new URLSearchParams(location.search);
+const token = Object.fromEntries(['quotation', 'expires', 'signature'].map(k => [k, query.get(k) || '']));
+const contextUrl = '/api/method/bude_api.api.sales_crm.quotation_response_context?' + new URLSearchParams(token);
+const message = document.querySelector('#message');
+fetch(contextUrl).then(r => r.json()).then(payload => {
+  const envelope = payload.message || payload;
+  if (!envelope.ok) throw new Error(envelope.message || 'This link is not valid.');
+  const value = envelope.data;
+  document.querySelector('#loading').hidden = true;
+  document.querySelector('#quote').hidden = false;
+  document.querySelector('#customer').textContent = value.customer;
+  document.querySelector('#number').textContent = value.quotation;
+  document.querySelector('#amount').textContent = `${value.currency} ${value.grand_total}`;
+  document.querySelector('#validity').textContent = value.valid_till ? `Valid until ${value.valid_till}` : '';
+}).catch(error => { document.querySelector('#loading').hidden = true; message.textContent = error.message; });
+document.querySelectorAll('button[data-action]').forEach(button => button.addEventListener('click', async () => {
+  document.querySelectorAll('button').forEach(item => item.disabled = true);
+  message.textContent = 'Saving your response…';
+  const body = {...token, action: button.dataset.action, notes: document.querySelector('#notes').value};
+  try {
+    const response = await fetch('/api/method/bude_api.api.sales_crm.quotation_response', {
+      method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)
+    });
+    const payload = await response.json(); const envelope = payload.message || payload;
+    if (!envelope.ok) throw new Error(envelope.message || 'Response could not be saved.');
+    document.querySelector('#quote').hidden = true;
+    message.textContent = button.dataset.action === 'accept'
+      ? 'Thank you. Your quotation acceptance has been recorded.'
+      : 'Your response has been recorded. The sales representative will follow up.';
+  } catch (error) {
+    message.textContent = error.message; document.querySelectorAll('button').forEach(item => item.disabled = false);
+  }
+}));
+</script>
+</body>
+</html>
