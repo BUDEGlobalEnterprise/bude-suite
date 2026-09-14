@@ -1,8 +1,75 @@
-# Frappe API Layer (`bude_api`)
+# Bude Suite — Backend (`bude_api`)
 
 Copyright (C) 2026 Bude Global Enterprises. Licensed under the [GNU GPLv3](LICENSE).
 
-Server-side extension for an ERPNext / Frappe site. Exposes whitelisted API methods that the Flutter client calls; **never** modifies ERPNext standard DocTypes.
+Server-side extension for an ERPNext / Frappe site. Exposes whitelisted API methods that the Bude mobile app suite calls; **never** modifies ERPNext standard DocTypes.
+
+Bude Suite is a mobile-first companion for ERPNext: four native Flutter apps
+(Inventory, HR, Sales, Helpdesk) covering RFID/barcode stock operations,
+attendance and leave, field sales and CRM, and ticketing — all working
+offline-first and syncing back to standard ERPNext documents. **This
+repository is the API layer those apps talk to.** No custom DocTypes, no
+proprietary data layer: every mutation lands on a standard ERPNext record.
+
+## Product preview
+
+*Mockups with fictional data — no real customer, employee, or business
+records. They show the UI this API layer is built to power.*
+
+### Inventory
+
+<table>
+<tr>
+<td align="center" width="20%"><img src="docs/screenshots/inventory/01-dashboard-light.png" width="160"><br><sub>Dashboard</sub></td>
+<td align="center" width="20%"><img src="docs/screenshots/inventory/02-stock-catalogue-light.png" width="160"><br><sub>Stock catalogue</sub></td>
+<td align="center" width="20%"><img src="docs/screenshots/inventory/03-rfid-scan-light.png" width="160"><br><sub>RFID scan</sub></td>
+<td align="center" width="20%"><img src="docs/screenshots/inventory/04-stock-transfer-light.png" width="160"><br><sub>Stock transfer</sub></td>
+<td align="center" width="20%"><img src="docs/screenshots/inventory/05-cycle-count-light.png" width="160"><br><sub>Cycle count</sub></td>
+</tr>
+</table>
+
+### HR
+
+<table>
+<tr>
+<td align="center" width="25%"><img src="docs/screenshots/hr/01-dashboard-light.png" width="160"><br><sub>Dashboard</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/hr/02-attendance-light.png" width="160"><br><sub>Attendance</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/hr/03-leave-light.png" width="160"><br><sub>Leave</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/hr/04-team-light.png" width="160"><br><sub>Team</sub></td>
+</tr>
+</table>
+
+### Sales
+
+<table>
+<tr>
+<td align="center" width="25%"><img src="docs/screenshots/sales/01-dashboard-light.png" width="160"><br><sub>Dashboard</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/sales/02-customers-light.png" width="160"><br><sub>Customers</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/sales/03-new-order-light.png" width="160"><br><sub>New order</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/sales/04-collections-light.png" width="160"><br><sub>Collections</sub></td>
+</tr>
+</table>
+
+### Helpdesk
+
+<table>
+<tr>
+<td align="center" width="25%"><img src="docs/screenshots/helpdesk/01-dashboard-light.png" width="160"><br><sub>Dashboard</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/helpdesk/02-tickets-light.png" width="160"><br><sub>Ticket queue</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/helpdesk/03-ticket-detail-light.png" width="160"><br><sub>Ticket detail</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/helpdesk/04-new-ticket-light.png" width="160"><br><sub>New ticket</sub></td>
+</tr>
+</table>
+
+### Sign-in & account
+
+<table>
+<tr>
+<td align="center" width="25%"><img src="docs/screenshots/overview/01-login-light.png" width="160"><br><sub>Sign in</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/account/01-notifications-light.png" width="160"><br><sub>Notifications</sub></td>
+<td align="center" width="25%"><img src="docs/screenshots/account/02-profile-light.png" width="160"><br><sub>Profile</sub></td>
+</tr>
+</table>
 
 ## Status
 
@@ -49,7 +116,7 @@ bude_api/
 
 ```bash
 # from your frappe-bench directory
-bench get-app bude_api /path/to/bude-rfid-inventory/backend/bude_api
+bench get-app bude_api https://github.com/BUDEGlobalEnterprise/bude-suite.git
 bench --site <site> install-app bude_api
 bench restart
 ```
@@ -149,5 +216,6 @@ customer address. Offline visits remain clearly marked as unverified until
 synced. Tune the two distance settings for the operating environment rather
 than lowering them simply to remove validation failures.
 
-See [the commercial pilot runbook](../../../documentation/sales/bude-sales-commercial-pilot.md)
-for rollout, permissions, acceptance criteria, support, and packaging.
+The commercial pilot runbook (rollout, permissions, acceptance criteria,
+support, and packaging) lives alongside the mobile app source and is not
+part of this repository.
