@@ -33,6 +33,53 @@ proprietary data layer: every mutation lands on a standard ERPNext record.
 
 ---
 
+## The 4 Applications
+
+Bude Suite delivers four focused native Flutter mobile apps built for field and warehouse operations. Each app communicates with standard ERPNext entities through `bude_api` without requiring custom DocTypes:
+
+### 📦 1. Bude Inventory
+- **Purpose:** Full-featured warehouse stock management for handhelds and smartphones.
+- **Key Capabilities:**
+  - Barcode and UHF RFID tag scanning (Chainway, Zebra, Urovo, and generic BLE readers via Hardware Abstraction Layer).
+  - Inter-warehouse stock transfers with bin, rack, and shelf child warehouse selection.
+  - Goods Receipt against open Purchase Orders or ad-hoc intake.
+  - Physical cycle counting and stock reconciliation with automatic variance calculation.
+  - Tracking allocations for Batches, Serial Numbers, and expiry dates.
+  - Built-in ZPL and PDF thermal label generation.
+- **Primary ERPNext DocTypes:** `Item`, `Stock Entry`, `Purchase Receipt`, `Stock Reconciliation`, `Batch`, `Serial No`, `Warehouse`.
+
+### 👥 2. Bude HR
+- **Purpose:** Fast mobile employee self-service and supervisor team management.
+- **Key Capabilities:**
+  - Geofenced check-in and check-out with automatic shift assignment detection.
+  - Leave balance checking, new leave applications, and manager approval queues.
+  - Employee profile 360 including internal work history, emergency contacts, and education.
+  - Shift rosters, company holiday lists, and attendance anomaly tracking.
+  - Mobile expense claim submission with receipt photo attachments.
+- **Primary ERPNext DocTypes:** `Employee`, `Attendance`, `Leave Application`, `Leave Allocation`, `Shift Assignment`, `Expense Claim`.
+
+### 💼 3. Bude Sales & CRM
+- **Purpose:** Offline-first field sales, route operations, and order-to-cash workflow.
+- **Key Capabilities:**
+  - Customer 360: outstanding balance, credit limit, receivable aging, and order progress.
+  - Verified field visits with GPS accuracy checking and customer address geofencing.
+  - Provider-neutral CRM for Leads, Deals/Opportunities, activities, and timeline logs (supports ERPNext and Frappe CRM).
+  - On-site Quotation drafting and Sales Order handoff.
+  - Overdue collections queue with one-tap calling, emailing, and mapping navigation.
+- **Primary ERPNext DocTypes:** `Customer`, `Lead`, `Opportunity`, `Quotation`, `Sales Order`, `Sales Invoice`, `Payment Request`.
+
+### 🎫 4. Bude Helpdesk
+- **Purpose:** Responsive ticket management and field support operations.
+- **Key Capabilities:**
+  - Agent and requester ticket queues with real-time status filtering.
+  - Server-time SLA countdown timers with warning alerts for upcoming breaches.
+  - One-tap ticket creation with category, priority, and photo attachment support.
+  - Context-aware knowledge base article suggestions.
+  - Public and private activity timelines with customer communication integration.
+- **Primary ERPNext DocTypes:** `HD Ticket`, `HD Article`, `Issue`, `Communication`.
+
+---
+
 ## Product preview
 
 *Reference design mockups, not screenshots of the shipped app — the actual
@@ -124,6 +171,48 @@ apps rather than the mockups above.
 > [!TIP]
 > Use it to log into the web builds below, or point a fresh install of the
 > mobile apps at that server URL.
+
+### 🌐 Demo Web Builds (Try Online)
+
+You can test all four Flutter applications directly in your browser:
+
+| Application | Live Demo URL |
+|---|---|
+| **📦 Bude Inventory** | [demo-stock.budeglobal.in](https://demo-stock.budeglobal.in) |
+| **👥 Bude HR** | [demo-hr.budeglobal.in](https://demo-hr.budeglobal.in) |
+| **💼 Bude Sales** | [demo-sales.budeglobal.in](https://demo-sales.budeglobal.in) |
+| **🎫 Bude Helpdesk** | [demo-helpdesk.budeglobal.in](https://demo-helpdesk.budeglobal.in) |
+
+> [!NOTE]
+> When prompted on first launch, use Server URL `https://erp1.budeglobal.in`, username `demo@budeglobal.in`, and password `jVHoCW8igy1AvCjNBovv`.
+
+### Self-Hosted Demo Credentials & Setup
+
+If you are self-hosting `bude_api` on your own Frappe / ERPNext server, you can create a safe, read-only demo user with a single bench command:
+
+```bash
+# From your frappe-bench directory:
+bench --site <your-site> execute bude_api.demo.public_demo_user.ensure --args "['YourDemoPassword123']"
+```
+
+| Parameter | Value |
+|---|---|
+| **Demo Username** | `demo@budeglobal.in` |
+| **Demo Password** | *(The password specified in the command above)* |
+| **Operational Roles** | `Stock User`, `HR User`, `Sales User`, `Accounts User`, `Agent` |
+| **Safety Guard** | Automatically restricted to read-only via `bude_api.services.common.demo_readonly` |
+
+> [!TIP]
+> **Safe by Design:** The demo user created on self-hosted instances is automatically restricted to read-only mode by `bude_api`'s `before_request` hook. You can safely share these demo credentials with testers or evaluators without risking your production or staging ERPNext database.
+
+#### Seeding Sample Demo Data (Optional for Self-Hosters)
+
+To populate your self-hosted test bench with realistic items, warehouses, employees, customers, and tickets for app testing:
+
+```bash
+# Seed realistic demo data into your test site:
+bench --site <your-site> execute bude_api.demo.seed.run --kwargs "{'confirm_demo_data': True}"
+```
 
 ---
 
