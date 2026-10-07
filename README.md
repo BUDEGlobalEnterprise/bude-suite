@@ -1,5 +1,14 @@
 # Bude Suite — Backend (`bude_api`)
 
+[![Latest Release](https://img.shields.io/github/v/release/BUDEGlobalEnterprise/bude-suite?color=orange&label=Latest%20Release)](https://github.com/BUDEGlobalEnterprise/bude-suite/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/BUDEGlobalEnterprise/bude-suite/total?color=blue&label=Downloads)](https://github.com/BUDEGlobalEnterprise/bude-suite/releases)
+[![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![Platform: ERPNext](https://img.shields.io/badge/Platform-ERPNext%20%2F%20Frappe-0089FF?logo=python&logoColor=white)](https://erpnext.com/)
+[![Apps: Flutter](https://img.shields.io/badge/Mobile%20Apps-Flutter-02569B?logo=flutter&logoColor=white)](#product-preview)
+[![Status: Production](https://img.shields.io/badge/Status-Production-brightgreen)](#status)
+[![Docs](https://img.shields.io/badge/Docs-Product%20Overview-f59e0b)](docs/PRODUCT.md)
+[![Demo](https://img.shields.io/badge/Live%20Demo-erp1.budeglobal.in-orange)](#live-demo)
+
 Copyright (C) 2026 [Bude Global Enterprises](https://www.budeglobal.in/). Licensed under the [GNU GPLv3](LICENSE). Developed by [Aravind Govindhasamy](https://aravind-govindhasamy.github.io/). See [CONTRIBUTORS.md](CONTRIBUTORS.md).
 
 Server-side extension for an ERPNext / Frappe site. Exposes whitelisted API methods that the Bude mobile app suite calls; **never** modifies ERPNext standard DocTypes.
@@ -10,6 +19,19 @@ attendance and leave, field sales and CRM, and ticketing — all working
 offline-first and syncing back to standard ERPNext documents. **This
 repository is the API layer those apps talk to.** No custom DocTypes, no
 proprietary data layer: every mutation lands on a standard ERPNext record.
+
+---
+
+## Key Features
+
+- 📦 **Inventory** — RFID / barcode scanning, stock transfers, cycle counts, warehouse dashboards
+- 👥 **HR** — Attendance check-in/out, leave requests, team management
+- 💼 **Sales & CRM** — Provider-neutral CRM, offline field visits, order-to-cash, quotation workflows
+- 🎫 **Helpdesk** — Ticket queue, SLA tracking, assignment & notifications
+- 🔌 **Offline-first** — Sync back to standard ERPNext documents when connectivity returns
+- 🔒 **Zero custom DocTypes** — All persistence through standard ERPNext entities
+
+---
 
 ## Product preview
 
@@ -73,6 +95,8 @@ power.*
 </tr>
 </table>
 
+---
+
 ## Live demo
 
 A public, read-only login on the pilot ERPNext site, for browsing the real
@@ -84,20 +108,24 @@ apps rather than the mockups above.
 | Username | `demo@budeglobal.in` |
 | Password | `jVHoCW8igy1AvCjNBovv` |
 
-**This account cannot write.** It holds the same operational roles a real
-Stock/HR/Sales/Helpdesk user would (so the apps' navigation renders
-normally), but every create, update, submit, delete and cancel is denied at
-the request level regardless of what those roles would otherwise allow —
-enforced in [`services/common/demo_readonly.py`](bude_api/services/common/demo_readonly.py),
-independent of the roles' own permissions, so real staff holding the same
-roles are unaffected. A handful of doctypes (Salary Slip, Payment Entry,
-User, and a few others) are blocked from this account even for reading.
-Anything not explicitly allow-listed is denied by default, including
-endpoints this file doesn't know about — see that module's docstring for
-what was tried first and why it didn't work.
+> [!WARNING]
+> **This account cannot write.** It holds the same operational roles a real
+> Stock/HR/Sales/Helpdesk user would (so the apps' navigation renders
+> normally), but every create, update, submit, delete and cancel is denied at
+> the request level regardless of what those roles would otherwise allow —
+> enforced in [`services/common/demo_readonly.py`](bude_api/services/common/demo_readonly.py),
+> independent of the roles' own permissions, so real staff holding the same
+> roles are unaffected. A handful of doctypes (Salary Slip, Payment Entry,
+> User, and a few others) are blocked from this account even for reading.
+> Anything not explicitly allow-listed is denied by default, including
+> endpoints this file doesn't know about — see that module's docstring for
+> what was tried first and why it didn't work.
 
-Use it to log into the web builds below, or point a fresh install of the
-mobile apps at that server URL.
+> [!TIP]
+> Use it to log into the web builds below, or point a fresh install of the
+> mobile apps at that server URL.
+
+---
 
 ## Status
 
@@ -111,6 +139,8 @@ ERPNext order-to-cash, notification scheduling, and deployment diagnostics.
 | `services/erpnext_client.py` | Thin wrapper over Frappe ORM for standard DocTypes (Item, Stock Entry, Warehouse, etc.) |
 | `api/health.py` | Whitelisted `ping` endpoint for client connectivity checks |
 | `config/settings.py` | Reads environment + Frappe site_config values |
+
+---
 
 ## Layout
 
@@ -140,6 +170,8 @@ bude_api/
     └── test_items.py
 ```
 
+---
+
 ## Install onto a Frappe bench
 
 ```bash
@@ -149,6 +181,12 @@ bench --site <site> install-app bude_api
 bench restart
 ```
 
+> [!NOTE]
+> Requires a running Frappe bench with ERPNext installed. The app registers
+> itself through `hooks.py` and does not create any custom DocTypes.
+
+---
+
 ## Calling endpoints
 
 ```
@@ -157,11 +195,15 @@ GET  /api/method/bude_api.api.health.ping         # custom — returns service s
 GET  /api/resource/Item?filters=[["disabled","=",0]]   # standard ERPNext REST
 ```
 
+---
+
 ## Constraints
 
 - No custom DocTypes.
 - All persistence goes through ERPNext standard entities.
 - Connectors for SAP / Zoho / other ERPs land under a future `integrations/` package using the Adapter pattern.
+
+---
 
 ## Bude Sales CRM
 
@@ -189,10 +231,11 @@ Add these keys to the site's `site_config.json`, then restart the bench:
 }
 ```
 
-Use `"frappe_crm"` only after installing Frappe CRM on the same site. CRM is
-feature-flagged off when `bude_sales_crm_enabled` is absent. The bootstrap API
-describes the provider, statuses, stages, sources, territories, writable/custom
-fields, channel availability, and current-user capabilities.
+> [!IMPORTANT]
+> Use `"frappe_crm"` only after installing Frappe CRM on the same site. CRM is
+> feature-flagged off when `bude_sales_crm_enabled` is absent. The bootstrap API
+> describes the provider, statuses, stages, sources, territories, writable/custom
+> fields, channel availability, and current-user capabilities.
 
 Signed public intake sends compact JSON plus a current Unix `timestamp`, a hex
 HMAC-SHA256 `signature` of `<timestamp>.<canonical-json>`, a channel key, and a
@@ -219,19 +262,21 @@ and quotation expiry. Configure Firebase delivery and the existing device
 registration endpoints to enable push transport; notification preferences are
 per user.
 
-The public `capture_intake` endpoint is for trusted server-to-server connectors
-only. Keep `bude_sales_intake_secret` off every mobile client, use a fresh Unix
-timestamp and stable external ID, and sign the exact canonical JSON payload.
+> [!CAUTION]
+> The public `capture_intake` endpoint is for trusted server-to-server connectors
+> only. Keep `bude_sales_intake_secret` off every mobile client, use a fresh Unix
+> timestamp and stable external ID, and sign the exact canonical JSON payload.
 
 The separate quotation-response secret signs expiring accept/decline links.
 Accepted responses are written exactly once to the standard Quotation timeline;
 payment links are standard ERPNext Payment Requests. Do not reuse either public
 endpoint secret for another integration.
 
-Run `bude_api.api.sales_crm.setup_doctor` after installation and upgrades. It
-checks the selected provider, required DocTypes, scheduler, secrets, connector
-capabilities, and role access without exposing credentials. The same report is
-available to System Managers in **More > Setup doctor** in the sales app.
+> [!TIP]
+> Run `bude_api.api.sales_crm.setup_doctor` after installation and upgrades. It
+> checks the selected provider, required DocTypes, scheduler, secrets, connector
+> capabilities, and role access without exposing credentials. The same report is
+> available to System Managers in **More > Setup doctor** in the sales app.
 
 The scheduler calls the CRM reminder worker every 15 minutes. It creates
 permission-aware `Notification Log` records for assignment, overdue follow-up,
@@ -246,6 +291,18 @@ than lowering them simply to remove validation failures.
 
 See [the commercial pilot runbook](docs/sales/bude-sales-commercial-pilot.md)
 for rollout, permissions, acceptance criteria, support, and packaging.
+
+---
+
+## System Requirements
+
+- **ERPNext:** v14 or later on a Frappe bench
+- **Python:** 3.10+
+- **Mobile Apps:** Flutter-built native apps (Android / iOS)
+- **Hardware:** Optional RFID readers / barcode scanners for Inventory module
+- **Connectivity:** Offline-first; syncs when network is available
+
+---
 
 ## More documentation
 
