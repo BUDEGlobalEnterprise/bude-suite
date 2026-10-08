@@ -5,7 +5,7 @@
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![Platform: ERPNext](https://img.shields.io/badge/Platform-ERPNext%20%2F%20Frappe-0089FF?logo=python&logoColor=white)](https://erpnext.com/)
 [![Apps: Flutter](https://img.shields.io/badge/Mobile%20Apps-Flutter-02569B?logo=flutter&logoColor=white)](#product-preview)
-[![Status: Production](https://img.shields.io/badge/Status-Production-brightgreen)](#status)
+[![Status: Under Development](https://img.shields.io/badge/Status-Under%20Development-orange)](#status)
 [![Docs](https://img.shields.io/badge/Docs-Product%20Overview-f59e0b)](docs/PRODUCT.md)
 [![Demo](https://img.shields.io/badge/Live%20Demo-erp1.budeglobal.in-orange)](#live-demo)
 
