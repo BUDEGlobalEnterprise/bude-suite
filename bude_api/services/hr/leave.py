@@ -40,7 +40,7 @@ def leave_balances() -> dict:
         "Leave Application",
         filters=[
             ["employee", "=", employee["name"]],
-            ["docstatus", "=", 1],
+            ["docstatus", "<", 2],  # Open requests are drafts until decided
             ["status", "in", ["Approved", "Open"]],
         ],
         fields=["leave_type", "total_leave_days"],
@@ -423,7 +423,7 @@ def manager_pending_leaves(limit: int = 50) -> dict:
         "Leave Application",
         filters=[
             ["leave_approver", "=", _current_user()],
-            ["docstatus", "=", 1],
+            ["docstatus", "=", 0],
             ["status", "=", "Open"],
         ],
         fields=[
@@ -461,7 +461,7 @@ def decide_leave(name: str, approved: bool, comment: str | None = None) -> dict:
     try:
         doc = frappe.get_doc("Leave Application", name)
         doc.status = status
-        _apply_decision(doc, comment)
+        _apply_decision(doc, comment, submit=True)
     except frappe.PermissionError:
         frappe.db.rollback()
         return failure("You do not have permission for this action.", code="PERMISSION_DENIED")

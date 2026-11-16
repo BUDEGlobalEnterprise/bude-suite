@@ -30,6 +30,7 @@ def get_reconciliation_history(warehouse: str = None, limit: int = 20) -> dict:
     for recon in recons:
         items_raw = frappe.get_list(
             "Stock Reconciliation Item",
+            parent_doctype="Stock Reconciliation",
             filters={"parent": recon["name"]},
             fields=["item_code", "item_name", "qty", "current_qty", "warehouse"],
         )

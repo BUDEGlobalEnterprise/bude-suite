@@ -250,6 +250,7 @@ def _activation_snapshot() -> dict:
     role_rows = (
         _list(
             "Has Role",
+            parent_doctype="User",
             filters=[
                 ["parent", "in", sorted(user_names)],
                 ["parenttype", "=", "User"],

@@ -27,7 +27,7 @@ def test_list_passes_disabled_filter(mock_frappe):
     mock_frappe.get_list.return_value = []
     warehouses_api.list()
     _, kwargs = mock_frappe.get_list.call_args
-    assert kwargs["filters"] == {"disabled": 0}
+    assert kwargs["filters"] == {"disabled": 0, "is_group": 0}
 
 
 @patch("bude_api.api.warehouses.frappe")
@@ -36,7 +36,7 @@ def test_list_filters_by_company_when_given(mock_frappe):
     result = warehouses_api.list(company="Company A")
     assert result["ok"] is True
     _, kwargs = mock_frappe.get_list.call_args
-    assert kwargs["filters"] == {"disabled": 0, "company": "Company A"}
+    assert kwargs["filters"] == {"disabled": 0, "is_group": 0, "company": "Company A"}
 
 
 @patch("bude_api.api.warehouses.frappe")

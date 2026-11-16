@@ -1027,6 +1027,8 @@ def test_manager_pending_leaves_scoped_to_approver(mock_frappe):
     assert result["data"][0]["employee_name"] == "Bob"
     _, kwargs = mock_frappe.get_list.call_args
     assert ["leave_approver", "=", "manager@example.com"] in kwargs["filters"]
+    # HRMS refuses to submit an Open leave, so pending requests are drafts.
+    assert ["docstatus", "=", 0] in kwargs["filters"]
 
 
 @patch("bude_api.api.hr.frappe")
@@ -1035,6 +1037,7 @@ def test_decide_leave_approves_assigned_request(mock_frappe):
     mock_frappe.session.user = "manager@example.com"
     mock_frappe.get_list.return_value = [{"name": "LV-001"}]
     doc = MagicMock()
+    doc.docstatus = 0  # leave requests are drafts until decided
     mock_frappe.get_doc.return_value = doc
 
     result = hr_api.decide_leave("LV-001", approved=True, comment="Looks fine")
@@ -1043,7 +1046,9 @@ def test_decide_leave_approves_assigned_request(mock_frappe):
     assert result["data"]["status"] == "Approved"
     assert doc.status == "Approved"
     doc.add_comment.assert_called_once_with("Comment", "Looks fine")
-    doc.save.assert_called_once_with(ignore_permissions=False)
+    # Only a submitted leave hits the ledger and the balance.
+    doc.submit.assert_called_once_with()
+    doc.save.assert_not_called()
 
 
 @patch("bude_api.api.hr.frappe")

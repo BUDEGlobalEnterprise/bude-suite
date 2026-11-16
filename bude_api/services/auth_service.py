@@ -159,6 +159,14 @@ class AuthService:
         api_secret = user_doc.get_password("api_secret", raise_exception=False) if api_key else None
 
         if not api_key or not api_secret:
+            # Two apps signing a new user in at once must not each mint keys
+            # (the loser's secret is overwritten). Lock the row, then re-check.
+            frappe.db.get_value("User", user_doc.name, "name", for_update=True)
+            user_doc.reload()
+            api_key = user_doc.api_key
+            api_secret = user_doc.get_password("api_secret", raise_exception=False) if api_key else None
+            if api_key and api_secret:
+                return api_key, api_secret
             if not api_key:
                 api_key = frappe.generate_hash(length=15)
                 user_doc.api_key = api_key

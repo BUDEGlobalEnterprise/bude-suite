@@ -10,6 +10,7 @@ except ImportError:  # pragma: no cover - bench runtime dependency
     frappe = None
 
 from ..admin.notification_fanout import fan_out_notification_logs
+from .service import ERPNEXT_CRM_TASK_FILTERS
 
 FALSE_VALUES = {False, 0, "0", "false", "False", "no", "off"}
 OPEN_TASK_STATUSES = ["Open", "Todo", "To Do", "Pending"]
@@ -96,7 +97,8 @@ def _task_reminders(now: datetime) -> list[dict]:
     rows = _safe_list(
         "ToDo",
         ["name", "description", "allocated_to", "date", "status", "reference_type", "reference_name"],
-        filters=[["status", "in", OPEN_TASK_STATUSES], ["date", "<=", now.date()]],
+        # Only sales to-dos; ToDo is shared with warehouse counts and helpdesk.
+        filters=[["status", "in", OPEN_TASK_STATUSES], ["date", "<=", now.date()], *ERPNEXT_CRM_TASK_FILTERS],
     )
     return [
         _reminder(

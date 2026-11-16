@@ -435,9 +435,18 @@ def _notification_fields() -> list[str]:
         ],
     )
 
+def _plain_text(value) -> str:
+    """Frappe notification subjects carry HTML (<strong>, <div>); the app shows text."""
+    import html
+    import re
+
+    text = re.sub(r"<[^>]+>", " ", str(value or ""))
+    return re.sub(r"\s+", " ", html.unescape(text)).strip()
+
+
 def _notification_payload(row: dict) -> dict:
-    title = row.get("subject") or "Notification"
-    message = row.get("email_content") or ""
+    title = _plain_text(row.get("subject")) or "Notification"
+    message = _plain_text(row.get("email_content"))
     reference_type = row.get("document_type") or ""
     reference_name = row.get("document_name") or ""
     category, route = _notification_category_route(reference_type, reference_name, title, message)
@@ -523,7 +532,7 @@ def _approval_aging() -> list[dict]:
         "Leave Application",
         filters=[
             ["leave_approver", "=", _current_user()],
-            ["docstatus", "=", 1],
+            ["docstatus", "=", 0],
             ["status", "=", "Open"],
         ],
         fields=["name", "employee_name", "from_date", "creation"],
@@ -569,10 +578,16 @@ def _as_bool(value) -> bool:
         return value.strip().lower() in {"1", "true", "yes"}
     return bool(value)
 
-def _apply_decision(doc, comment: str | None) -> None:
+def _apply_decision(doc, comment: str | None, submit: bool = False) -> None:
+    """Save the approver's decision. Leave and shift requests only take effect
+    (ledger, balance, attendance) once submitted, which HRMS allows exactly
+    when the status is Approved or Rejected."""
     if comment:
         doc.add_comment("Comment", comment)
-    doc.save(ignore_permissions=False)
+    if submit and doc.docstatus == 0:
+        doc.submit()
+    else:
+        doc.save(ignore_permissions=False)
     frappe.db.commit()
 
 __all__ = [name for name in globals() if not name.startswith("__")]

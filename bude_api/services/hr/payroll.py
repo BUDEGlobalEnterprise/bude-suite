@@ -47,6 +47,7 @@ def salary_slip_detail(name: str) -> dict:
     slip = rows[0]
     components = frappe.get_list(
         "Salary Detail",
+        parent_doctype="Salary Slip",
         filters=[["parent", "=", name]],
         fields=["parentfield", "salary_component", "amount"],
         limit_page_length=200,

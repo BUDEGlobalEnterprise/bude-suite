@@ -63,6 +63,7 @@ def _planned_visits(selected: date, customer_names: list[str]) -> list[dict]:
     try:
         participants = frappe.get_list(
             "Event Participants",
+            parent_doctype="Event",
             filters=[
                 ["reference_doctype", "=", "Customer"],
                 ["reference_docname", "in", customer_names],

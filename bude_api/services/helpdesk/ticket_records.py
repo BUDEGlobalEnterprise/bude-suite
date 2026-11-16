@@ -627,6 +627,7 @@ def saved_replies(ticket_name: str, limit: int = 5) -> dict:
         try:
             links = frappe.get_list(
                 "HD Saved Reply Team",
+                parent_doctype="HD Saved Reply",
                 filters=[
                     ["parent", "in", team_candidates],
                     ["parenttype", "=", "HD Saved Reply"],
@@ -741,6 +742,7 @@ def ticket_sla_context(ticket_name: str) -> dict:
         try:
             priority_rows = frappe.get_list(
                 "HD Service Level Priority",
+                parent_doctype="HD Service Level Agreement",
                 filters=[
                     ["parent", "=", sla],
                     ["parenttype", "=", "HD Service Level Agreement"],
@@ -780,6 +782,7 @@ def ticket_sla_context(ticket_name: str) -> dict:
         try:
             days = frappe.get_list(
                 "HD Service Day",
+                parent_doctype="HD Service Level Agreement",
                 filters=[
                     ["parent", "=", sla],
                     ["parenttype", "=", "HD Service Level Agreement"],
@@ -841,6 +844,7 @@ def ticket_sla_context(ticket_name: str) -> dict:
             try:
                 holiday_rows = frappe.get_list(
                     "HD Holiday",
+                    parent_doctype="HD Service Holiday List",
                     filters=[
                         ["parent", "=", holiday_list],
                         ["parenttype", "=", "HD Service Holiday List"],
@@ -958,6 +962,7 @@ def ticket_classification(ticket_name: str) -> dict:
     try:
         fields = frappe.get_list(
             "HD Ticket Template Field",
+            parent_doctype="HD Ticket Template",
             filters=[
                 ["parent", "=", template],
                 ["parenttype", "=", "HD Ticket Template"],
@@ -1031,6 +1036,7 @@ def ticket_team_context(ticket_name: str) -> dict:
     try:
         member_rows = frappe.get_list(
             "HD Team Member",
+            parent_doctype="HD Team",
             filters=[
                 ["parent", "=", team],
                 ["parenttype", "=", "HD Team"],
@@ -1179,6 +1185,7 @@ def ticket_organization_context(ticket_name: str) -> dict:
     try:
         members = frappe.get_list(
             "HD Customer Member",
+            parent_doctype="HD Customer",
             filters=[
                 ["parent", "=", customer],
                 ["parenttype", "=", "HD Customer"],

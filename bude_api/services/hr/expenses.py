@@ -17,10 +17,14 @@ def expense_claims(limit: int = 50) -> dict:
         order_by="modified desc",
         limit_page_length=page_limit,
     )
+    titles = _claim_titles([str(row.get("name") or "") for row in rows])
     return success(
         [
             {
                 "name": str(row.get("name") or ""),
+                # What was claimed ("Travel · Taxi to client site"), so the
+                # list is not a column of HR-EXP numbers.
+                "title": titles.get(str(row.get("name") or ""), ""),
                 "status": str(row.get("status") or ""),
                 "total_claimed_amount": float(row.get("total_claimed_amount") or 0),
                 "posting_date": str(row.get("posting_date") or ""),
@@ -28,6 +32,35 @@ def expense_claims(limit: int = 50) -> dict:
             for row in rows
         ]
     )
+
+
+def _claim_titles(names: list[str]) -> dict[str, str]:
+    names = [name for name in names if name]
+    if not names:
+        return {}
+    try:
+        lines = frappe.get_list(
+            "Expense Claim Detail",
+            parent_doctype="Expense Claim",
+            filters=[["parent", "in", names]],
+            fields=["parent", "expense_type", "description", "idx"],
+            order_by="idx asc",
+            limit_page_length=1000,
+        )
+    except Exception:
+        return {}
+    types: dict[str, list[str]] = {}
+    first_description: dict[str, str] = {}
+    for line in lines:
+        parent = line.get("parent")
+        kind = str(line.get("expense_type") or "").strip()
+        if kind and kind not in types.setdefault(parent, []):
+            types[parent].append(kind)
+        first_description.setdefault(parent, str(line.get("description") or "").strip())
+    return {
+        name: " · ".join(part for part in (", ".join(types.get(name, [])), first_description.get(name, "")) if part)
+        for name in names
+    }
 
 def submit_expense_claim(
     expense_type: str,
@@ -110,6 +143,7 @@ def expense_claim_detail(name: str) -> dict:
     claim = rows[0]
     lines = frappe.get_list(
         "Expense Claim Detail",
+        parent_doctype="Expense Claim",
         filters=[["parent", "=", name]],
         fields=["expense_type", "amount", "sanctioned_amount", "description"],
         limit_page_length=100,

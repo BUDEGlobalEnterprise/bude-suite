@@ -104,6 +104,7 @@ def onboarding_checklists(limit: int = 50, offset: int = 0) -> dict:
         for row in rows:
             activities = frappe.get_list(
                 "Employee Boarding Activity",
+                parent_doctype="Employee Onboarding",
                 filters=[["parent", "=", row["name"]]],
                 fields=[
                     "name",

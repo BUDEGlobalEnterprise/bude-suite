@@ -127,11 +127,17 @@ def _dead_stock_value(warehouse: str | None, from_date: str) -> float:
     )
 
 def _sales_velocity_qty(warehouse: str | None, from_date: str) -> float:
+    # posting_date/docstatus live on the invoice, not the line: query the
+    # parent and join the lines (permission is checked on Sales Invoice).
     filters = [["posting_date", ">=", from_date], ["docstatus", "=", 1]]
     rows = frappe.get_list(
-        "Sales Invoice Item",
+        "Sales Invoice",
         filters=filters,
-        fields=["item_code", "qty", "warehouse"],
+        fields=[
+            "`tabSales Invoice Item`.item_code as item_code",
+            "`tabSales Invoice Item`.qty as qty",
+            "`tabSales Invoice Item`.warehouse as warehouse",
+        ],
         limit_page_length=5000,
     )
     total = 0.0
@@ -175,6 +181,7 @@ def _variance_trend(warehouse: str | None, from_date: str) -> list[dict]:
             continue
         items = frappe.get_list(
             "Stock Reconciliation Item",
+            parent_doctype="Stock Reconciliation",
             filters={"parent": recon["name"]},
             fields=["qty", "current_qty"],
             limit_page_length=1000,

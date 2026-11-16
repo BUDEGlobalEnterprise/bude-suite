@@ -63,7 +63,8 @@ def list(limit: int = 100, company: str | None = None) -> dict:
     except (TypeError, ValueError):
         return failure("limit must be an integer.", code="VALIDATION_BAD_LIMIT")
 
-    filters = {"disabled": 0}
+    # Group warehouses (e.g. "All Warehouses - X") cannot hold stock.
+    filters = {"disabled": 0, "is_group": 0}
     company = (company or "").strip()
     if company:
         filters["company"] = company

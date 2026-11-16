@@ -32,6 +32,16 @@ class CrmProvider(ABC):
     def __init__(self, frappe_module):
         self.frappe = frappe_module
 
+    def full_name(self, user: str) -> str:
+        """Show people, not login emails. get_fullname is cached per request."""
+        if not user:
+            return ""
+        try:
+            name = self.frappe.utils.get_fullname(user)
+        except Exception:
+            return user
+        return name if isinstance(name, str) and name else user
+
     @abstractmethod
     def lead_fields(self) -> list[str]: ...
 
@@ -109,7 +119,8 @@ class CrmProvider(ABC):
             "priority": row.get("priority") or "Medium",
             "assigned_to": row.get("assigned_to") or row.get("allocated_to") or "",
             "due_date": _serial(due),
-            "reference_kind": _kind(row.get("reference_doctype")),
+            # Frappe CRM: reference_doctype; ERPNext ToDo: reference_type.
+            "reference_kind": _kind(row.get("reference_doctype") or row.get("reference_type")),
             "reference_name": row.get("reference_docname") or row.get("reference_name") or "",
             "modified": _serial(row.get("modified")),
         }

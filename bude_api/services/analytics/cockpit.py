@@ -90,9 +90,12 @@ def _open_pick_lists(company: str | None) -> int:
 
 
 def _assigned_count_tasks(user: str, company: str | None) -> int:
+    # Same shape the Tasks screen reads: counts.generate_schedule creates one
+    # ToDo per Item with a "Cycle count warehouse:" description.
     filters = [
         ["status", "not in", _TODO_CLOSED_STATUSES],
-        ["reference_type", "=", "Stock Reconciliation"],
+        ["reference_type", "=", "Item"],
+        ["description", "like", "%Cycle count warehouse:%"],
     ]
     if user and user != "Administrator":
         filters.append(["allocated_to", "=", user])

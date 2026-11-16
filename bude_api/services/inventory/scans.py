@@ -100,4 +100,10 @@ def resolve_epc(epc: str) -> dict:
         if item:
             return success({"match_type": "item", "item": item[0]})
 
+    # Last: a typed item code — the Lookup box offers "EPC, barcode, or item
+    # code", and without this an item code was offered for binding as a tag.
+    item = frappe.get_all("Item", filters=[["item_code", "=", epc]], fields=_ITEM_FIELDS, limit=1)
+    if item:
+        return success({"match_type": "item", "item": item[0]})
+
     return success({"match_type": None})

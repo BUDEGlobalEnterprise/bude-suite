@@ -45,6 +45,18 @@ CUSTOM_FIELDS = {
             "translatable": 0,
         }
     ],
+    # Read at sign-in by auth_service.default_warehouse_for; pre-fills the
+    # Inventory app's default warehouse so store keepers don't have to.
+    "User": [
+        {
+            "fieldname": "default_warehouse",
+            "label": "Default Warehouse (mobile)",
+            "fieldtype": "Link",
+            "options": "Warehouse",
+            "insert_after": "time_zone",
+            "description": "Pre-filled in the Bude Inventory app at sign-in (bude_api).",
+        }
+    ],
 }
 
 

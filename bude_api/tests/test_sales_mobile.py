@@ -546,6 +546,7 @@ def test_items_adds_price_and_stock(mock_frappe):
         return []
 
     mock_frappe.get_list.side_effect = get_list
+    mock_frappe.get_all.side_effect = get_list  # selling prices are read with get_all
     mock_frappe.db.count.return_value = 1
 
     result = sales_api.items(search="wid", price_list="Retail", warehouse="Stores - A")
@@ -772,6 +773,7 @@ def test_customer_item_pricing_classifies_validity(mock_frappe):
         return []
 
     mock_frappe.get_list.side_effect = get_list
+    mock_frappe.get_all.side_effect = get_list  # selling prices are read with get_all
     result = sales_api.customer_item_pricing("CUST-001")
 
     assert result["ok"] is True

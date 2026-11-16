@@ -409,6 +409,7 @@ def _create_purchase_receipt(
     # Build a lookup of {item_code: po_detail_name, po_qty} from the PO lines.
     po_lines = frappe.get_list(
         "Purchase Order Item",
+        parent_doctype="Purchase Order",
         filters=[["parent", "=", against_po]],
         fields=["name", "item_code", "qty"],
         limit=500,

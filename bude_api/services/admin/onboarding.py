@@ -41,12 +41,18 @@ def role_profiles(limit: int = 50) -> dict:
         return denied
     if frappe is None:
         return failure("Frappe not available.", code="ENV_NO_FRAPPE")
-    rows = frappe.get_list(
-        "Role Profile",
-        fields=["name", "role_profile"],
-        limit_page_length=_coerce_limit(limit, 50, 200),
-        order_by="name asc",
-    )
+    try:
+        rows = frappe.get_list(
+            "Role Profile",
+            fields=["name", "role_profile"],
+            limit_page_length=_coerce_limit(limit, 50, 200),
+            order_by="name asc",
+        )
+    except frappe.PermissionError:
+        # Role Profile (and saving Users) is System Manager only in ERPNext.
+        return failure(
+            "Only a System Manager can assign role profiles.", code="PERMISSION_DENIED"
+        )
     return success(rows)
 
 

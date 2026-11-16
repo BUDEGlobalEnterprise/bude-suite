@@ -58,6 +58,7 @@ def test_item_price_returns_rate_and_available_qty(mock_frappe):
         return []
 
     mock_frappe.get_list.side_effect = get_list
+    mock_frappe.get_all.side_effect = get_list  # selling prices are read with get_all
 
     result = sales_api.item_price("ITEM-001", price_list="Retail")
 

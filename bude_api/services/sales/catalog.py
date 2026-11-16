@@ -59,6 +59,7 @@ def _uoms_by_item(item_codes: list[str]) -> dict[str, list[dict]]:
     try:
         rows = frappe.get_list(
             "UOM Conversion Detail",
+            parent_doctype="Item",
             filters=[["parent", "in", item_codes]],
             fields=["parent", "uom", "conversion_factor"],
             order_by="idx asc",

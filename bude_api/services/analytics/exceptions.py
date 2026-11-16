@@ -214,12 +214,30 @@ def _insert_and_submit(doc_data: dict) -> dict:
     return success({"doctype": doc_data["doctype"], "name": doc.name, "docstatus": doc.docstatus})
 
 
+_EXCEPTION_LABELS = {
+    "shortage": "Shortage",
+    "damage": "Damage",
+    "unknown_scan": "Unknown barcode",
+    "blocked_stock": "Stock on hold",
+}
+
+
 def _parse_todo(row: dict) -> dict:
     description = row.get("description") or ""
     first = description.splitlines()[0] if description else "Exception"
+    # The description is "Key: value" lines written by report(); show a label,
+    # what it is about, and the operator's note instead of raw codes.
+    parts = dict(
+        line.split(": ", 1) for line in description.splitlines() if ": " in line
+    )
+    kind = parts.get("Exception", "").strip()
+    label = _EXCEPTION_LABELS.get(kind, first)
+    subject = (parts.get("Item") or parts.get("Barcode") or "").strip()
     return {
         "name": row.get("name"),
-        "title": first,
+        "title": f"{label} · {subject}" if subject else label,
+        "kind": kind,
+        "note": parts.get("Note", "").strip(),
         "description": description,
         "reference_type": row.get("reference_type"),
         "reference_name": row.get("reference_name"),

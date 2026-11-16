@@ -784,8 +784,11 @@ class HrDemoSeeder:
         self._savepoint_seq += 1
         frappe.db.savepoint(savepoint)
         try:
+            set_name = payload.pop("__set_name", None)  # bypasses a stale naming series
+            ignore_mandatory = payload.pop("__ignore_mandatory", False)
             doc = frappe.get_doc({k: v for k, v in payload.items() if v is not None})
-            doc.insert(ignore_permissions=True)
+            doc.flags.ignore_mandatory = ignore_mandatory
+            doc.insert(ignore_permissions=True, set_name=set_name)
             if submit:
                 doc.submit()
             self._record(doctype, doc.name)

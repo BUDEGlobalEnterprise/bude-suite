@@ -1144,6 +1144,7 @@ def get_manufacturing_readiness(
     try:
         rows = frappe.get_list(
             "BOM Item",
+            parent_doctype="BOM",
             filters=[
                 ["parent", "=", bom.get("name")],
                 ["parenttype", "=", "BOM"],
@@ -1359,6 +1360,7 @@ def get_production_status(item_code: str, limit: int = 10) -> dict:
             try:
                 operation_rows = frappe.get_list(
                     "Work Order Operation",
+                    parent_doctype="Work Order",
                     filters=[
                         ["parent", "in", visible_names],
                         ["parenttype", "=", "Work Order"],
@@ -1485,6 +1487,7 @@ def get_production_status(item_code: str, limit: int = 10) -> dict:
                 try:
                     time_logs = frappe.get_list(
                         "Job Card Time Log",
+                        parent_doctype="Job Card",
                         filters=[
                             ["parent", "in", job_card_names],
                             ["parenttype", "=", "Job Card"],
@@ -1873,6 +1876,7 @@ def _buying_defaults(item_code: str) -> list[dict]:
     try:
         rows = frappe.get_list(
             "Item Default",
+            parent_doctype="Item",
             filters=[
                 ["parent", "=", item_code],
                 ["parenttype", "=", "Item"],
@@ -1909,6 +1913,7 @@ def _recent_item_receipts(item_code: str, limit: int) -> list[dict]:
     try:
         item_rows = frappe.get_list(
             "Purchase Receipt Item",
+            parent_doctype="Purchase Receipt",
             filters=[
                 ["item_code", "=", item_code],
                 ["docstatus", "=", 1],
@@ -1963,6 +1968,7 @@ def _reorder_rules(item_code: str, warehouse: str) -> list[dict]:
         filters.append(["warehouse", "=", warehouse])
     rules = frappe.get_list(
         "Item Reorder",
+        parent_doctype="Item",
         filters=filters,
         fields=_existing_fields(
             "Item Reorder",

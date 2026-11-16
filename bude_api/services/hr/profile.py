@@ -150,6 +150,7 @@ def _employee_skills(employee: str) -> list[dict]:
         )
         rows = frappe.get_list(
             "Employee Skill",
+            parent_doctype="Employee Skill Map",
             filters=[
                 ["parent", "=", maps[0]["name"]],
                 ["parenttype", "=", "Employee Skill Map"],
@@ -186,6 +187,7 @@ def _employee_trainings(employee: str) -> list[dict]:
             return []
         rows = frappe.get_list(
             "Employee Training",
+            parent_doctype="Employee Skill Map",
             filters=[
                 ["parent", "=", maps[0]["name"]],
                 ["parenttype", "=", "Employee Skill Map"],
@@ -214,6 +216,7 @@ def _employee_upcoming_training(employee: str) -> list[dict]:
             return []
         attendees = frappe.get_list(
             "Training Event Employee",
+            parent_doctype="Training Event",
             filters=[
                 ["employee", "=", employee],
                 ["parenttype", "=", "Training Event"],
@@ -320,6 +323,7 @@ def _employee_current_appraisal(employee: str) -> dict:
         if frappe.db.exists("DocType", "Appraisal Goal"):
             goals = frappe.get_list(
                 "Appraisal Goal",
+                parent_doctype="Appraisal",
                 filters=[
                     ["parent", "=", appraisal.get("name")],
                     ["parenttype", "=", "Appraisal"],
@@ -392,6 +396,7 @@ def _employee_promotions(employee: str) -> list[dict]:
             try:
                 rows = frappe.get_list(
                     "Employee Property History",
+                    parent_doctype="Employee Promotion",
                     filters=[
                         ["parent", "=", promotion.get("name")],
                         ["parenttype", "=", "Employee Promotion"],
@@ -470,6 +475,7 @@ def _employee_transfers(employee: str) -> list[dict]:
             try:
                 rows = frappe.get_list(
                     "Employee Property History",
+                    parent_doctype="Employee Transfer",
                     filters=[
                         ["parent", "=", transfer.get("name")],
                         ["parenttype", "=", "Employee Transfer"],
@@ -554,6 +560,7 @@ def _employee_separations(employee: str) -> list[dict]:
             try:
                 rows = frappe.get_list(
                     "Employee Boarding Activity",
+                    parent_doctype="Employee Separation",
                     filters=[
                         ["parent", "=", separation.get("name")],
                         ["parenttype", "=", "Employee Separation"],
@@ -650,6 +657,7 @@ def _employee_groups(employee: str) -> list[dict]:
             return []
         links = frappe.get_list(
             "Employee Group Table",
+            parent_doctype="Employee Group",
             filters=[
                 ["employee", "=", employee],
                 ["parenttype", "=", "Employee Group"],
@@ -680,6 +688,7 @@ def _employee_groups(employee: str) -> list[dict]:
         )
         membership_rows = frappe.get_list(
             "Employee Group Table",
+            parent_doctype="Employee Group",
             filters=[
                 ["parent", "in", group_names],
                 ["parenttype", "=", "Employee Group"],
@@ -787,6 +796,7 @@ def _employee_leave_blocks(employee: dict) -> list[dict]:
         if user:
             allowed_rows = frappe.get_list(
                 "Leave Block List Allow",
+                parent_doctype="Leave Block List",
                 filters=[
                     ["parent", "in", list_names],
                     ["parenttype", "=", "Leave Block List"],
@@ -811,6 +821,7 @@ def _employee_leave_blocks(employee: dict) -> list[dict]:
         end = start + timedelta(days=90)
         rows = frappe.get_list(
             "Leave Block List Date",
+            parent_doctype="Leave Block List",
             filters=[
                 ["parent", "in", list_names],
                 ["parenttype", "=", "Leave Block List"],

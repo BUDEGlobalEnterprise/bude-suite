@@ -14,7 +14,7 @@ def manager_summary() -> dict:
         "Leave Application",
         filters={
             "leave_approver": user,
-            "docstatus": 1,
+            "docstatus": 0,
             "status": "Open",
         },
     )

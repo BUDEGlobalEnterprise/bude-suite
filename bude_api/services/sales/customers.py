@@ -230,6 +230,7 @@ def customer_buying_history(customer: str, limit: int = 5) -> dict:
     try:
         item_rows = frappe.get_list(
             "Sales Invoice Item",
+            parent_doctype="Sales Invoice",
             filters=[["parent", "in", invoice_names]],
             fields=item_fields,
             limit_page_length=5000,
@@ -554,7 +555,9 @@ def customer_item_pricing(customer: str, limit: int = 10) -> dict:
     if not {"item_code", "price_list_rate"}.issubset(fields):
         return success(empty)
     try:
-        rows = frappe.get_list(
+        # Selling prices: read like ERPNext's own get_item_details, which does not need
+        # Item Price permission; the caller already passed the sales-role check.
+        rows = frappe.get_all(
             "Item Price",
             filters=[["customer", "=", customer], ["selling", "=", 1]],
             fields=fields,
@@ -736,6 +739,7 @@ def customer_account_team(customer: str) -> dict:
     try:
         rows = frappe.get_list(
             "Sales Team",
+            parent_doctype="Customer",
             filters=[
                 ["parent", "=", customer],
                 ["parenttype", "=", "Customer"],
@@ -929,6 +933,7 @@ def customer_receipts(customer: str, limit: int = 10) -> dict:
         try:
             references = frappe.get_list(
                 "Payment Entry Reference",
+                parent_doctype="Payment Entry",
                 filters=[
                     ["parent", "in", payment_names],
                     ["parenttype", "=", "Payment Entry"],
@@ -1185,6 +1190,7 @@ def customer_dunnings(customer: str, limit: int = 10) -> dict:
         try:
             payments = frappe.get_list(
                 "Overdue Payment",
+                parent_doctype="Dunning",
                 filters=[
                     ["parent", "in", names],
                     ["parenttype", "=", "Dunning"],
@@ -1324,6 +1330,7 @@ def customer_maintenance(customer: str, limit: int = 10) -> dict:
     try:
         detail_rows = frappe.get_list(
             "Maintenance Schedule Detail",
+            parent_doctype="Maintenance Schedule",
             filters=[
                 ["parent", "in", names],
                 ["parenttype", "=", "Maintenance Schedule"],

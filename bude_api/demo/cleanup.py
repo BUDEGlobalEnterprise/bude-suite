@@ -14,6 +14,15 @@ except ImportError:  # pragma: no cover
 from .config import demo_runs_root, require_write_guard, validate_run_id
 
 DELETE_ORDER = [
+    # app_data.py: documents that hang off others go first.
+    "Notification Log",
+    "Communication",
+    "Comment",
+    "HD Ticket",
+    "ToDo",
+    "Opportunity",
+    "Lead",
+    "Sales Invoice",
     # HR first, and within it the documents that reference payroll setup
     # before the setup itself, so nothing is deleted out from under a link.
     "Salary Slip",
@@ -40,6 +49,10 @@ DELETE_ORDER = [
     # list, and HRMS then resolves *no* holidays for the employee, which
     # silently breaks leave, comp-off and salary slips on the next seed.
     "Holiday List Assignment",
+    # After every HR document that links an Employee, before the Holiday List
+    # the Employee itself links to (persona.py creates these).
+    "Employee",
+    "HD Agent",
     "Holiday List",
     # Master lists last: a document still linking to one blocks its delete.
     # Only entries this tool created are in the manifest, so a list the site

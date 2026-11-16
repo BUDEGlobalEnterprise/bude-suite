@@ -42,6 +42,7 @@ def agents(team: str | None = None, search: str | None = None) -> dict:
         return missing
     role_rows = frappe.get_list(
         "Has Role",
+        parent_doctype="User",
         filters=[
             ["role", "in", list(HELPDESK_AGENT_ROLES)],
             ["parenttype", "=", "User"],

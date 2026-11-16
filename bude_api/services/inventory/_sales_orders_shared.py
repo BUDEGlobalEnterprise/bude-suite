@@ -66,6 +66,7 @@ def _pending_summary_by_order(names: list[str]) -> dict[str, dict]:
         return {}
     lines = frappe.get_list(
         "Sales Order Item",
+        parent_doctype="Sales Order",
         filters=[["parent", "in", names]],
         fields=["parent", "qty", "delivered_qty"],
         limit=5000,
@@ -83,6 +84,7 @@ def _pending_summary_by_order(names: list[str]) -> dict[str, dict]:
 def _pending_lines(sales_order: str) -> list[dict]:
     rows = frappe.get_list(
         "Sales Order Item",
+        parent_doctype="Sales Order",
         filters=[["parent", "=", sales_order]],
         fields=[
             "name",

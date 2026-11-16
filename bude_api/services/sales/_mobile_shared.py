@@ -109,6 +109,7 @@ def _doc_date_filters(doctype: str, from_date: str | None, to_date: str | None) 
 def _append_sales_person_filter(filters: list, parenttype: str, sales_person: str) -> None:
     parents = frappe.get_list(
         "Sales Team",
+        parent_doctype=parenttype,
         filters=[["parenttype", "=", parenttype], ["sales_person", "=", sales_person]],
         fields=["parent"],
         limit_page_length=5000,
@@ -122,6 +123,7 @@ def _sales_people_for_docs(parenttype: str, names: list[str]) -> dict[str, str]:
         return {}
     rows = frappe.get_list(
         "Sales Team",
+        parent_doctype=parenttype,
         filters=[["parenttype", "=", parenttype], ["parent", "in", names]],
         fields=["parent", "sales_person"],
         limit_page_length=5000,
@@ -220,6 +222,7 @@ def _customer_credit_limits(customer: str) -> list[dict]:
     try:
         rows = frappe.get_list(
             "Customer Credit Limit",
+            parent_doctype="Customer",
             filters=[
                 ["parent", "=", customer],
                 ["parenttype", "=", "Customer"],
@@ -361,7 +364,9 @@ def _today_date() -> date:
 def _price_by_item(item_codes: list[str], price_list: str) -> dict:
     if not item_codes:
         return {}
-    rows = frappe.get_list(
+    # Selling prices: read like ERPNext's own get_item_details, which does not need
+    # Item Price permission; the caller already passed the sales-role check.
+    rows = frappe.get_all(
         "Item Price",
         filters=[
             ["item_code", "in", item_codes],

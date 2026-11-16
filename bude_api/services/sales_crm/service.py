@@ -28,6 +28,12 @@ SALES_MANAGER_ROLES = {"Sales Manager", "System Manager"}
 DEFAULT_LIMIT = 50
 MAX_LIMIT = 200
 FALSE_VALUES = {False, 0, "0", "false", "False", "no", "off"}
+# ERPNext ToDo is shared by every app (cycle counts, helpdesk assignments...);
+# the CRM only shows unlinked to-dos and those linked to sales records.
+ERPNEXT_CRM_TASK_FILTERS = [
+    ["reference_type", "in", ["", "Lead", "Opportunity", "Customer", "Quotation", "Prospect", "Contact"]],
+    ["description", "not like", "Exception:%"],  # unlinked warehouse floor exceptions
+]
 
 
 class SalesCrmService:
@@ -56,7 +62,7 @@ class SalesCrmService:
                 "capabilities": self._capabilities(provider, installed),
                 "lead_statuses": self._statuses(provider, "lead"),
                 "deal_stages": self._statuses(provider, "deal"),
-                "sources": self._names("CRM Lead Source" if provider.config.key == "frappe_crm" else "Lead Source"),
+                "sources": self._names(self._lead_source_doctype(provider)),
                 "territories": self._names("CRM Territory" if provider.config.key == "frappe_crm" else "Territory"),
                 "loss_reasons": self._names("CRM Lost Reason" if provider.config.key == "frappe_crm" else "Opportunity Lost Reason"),
                 "users": self._sales_users(),
@@ -92,7 +98,7 @@ class SalesCrmService:
         if status:
             filters.append(["status", "=", status])
         if source:
-            filters.append(["source", "=", source])
+            filters.append([self._lead_source_field(provider), "=", source])
         if territory:
             filters.append(["territory", "=", territory])
         if assigned_to_me and not self._is_manager():
@@ -195,7 +201,7 @@ class SalesCrmService:
                 "organization": provider.config.lead_organization_field,
                 "email": provider.config.lead_email_field,
                 "phone": provider.config.lead_phone_field,
-                "source": "source",
+                "source": self._lead_source_field(provider),
                 "territory": "territory",
                 "owner": provider.config.lead_owner_field,
                 "status": "status",
@@ -670,6 +676,8 @@ class SalesCrmService:
             filters.append([assigned_field, "=", self._user()])
         if overdue_only:
             filters.append([due_field, "<", self._today()])
+        if provider.config.key == "erpnext" and not (reference_kind and reference_name):
+            filters.extend(ERPNEXT_CRM_TASK_FILTERS)
         if reference_kind and reference_name:
             filters.extend(
                 [
@@ -690,9 +698,11 @@ class SalesCrmService:
             limit_start=page.offset,
             limit_page_length=page.limit,
         )
+        tasks = [provider.normalize_task(dict(row)) for row in rows]
+        self._attach_reference_titles(provider, tasks)
         return success(
             {
-                "tasks": [provider.normalize_task(dict(row)) for row in rows],
+                "tasks": tasks,
                 "total": self._count(provider.config.task_doctype, filters, []),
                 "limit": page.limit,
                 "offset": page.offset,
@@ -1073,6 +1083,8 @@ class SalesCrmService:
         task_filters = [[task_assignee, "=", self._user()], [task_due, "<", self._today()]]
         open_task_status = ["status", "not in", ["Done", "Cancelled"]] if provider.config.key == "frappe_crm" else ["status", "!=", "Closed"]
         task_filters.append(open_task_status)
+        if provider.config.key == "erpnext":
+            task_filters.extend(ERPNEXT_CRM_TASK_FILTERS)
         new_status = "New" if provider.config.key == "frappe_crm" else "Lead"
         lead_new_filters = [*lead_filters, ["status", "=", new_status]]
         stale_lead_filters = [*lead_filters, ["modified", "<", self._days_ago(7)]]
@@ -1698,7 +1710,7 @@ class SalesCrmService:
         except Exception:
             return True
 
-    def _safe_list(self, doctype, fields, *, filters=None, order_by=None, limit=50):
+    def _safe_list(self, doctype, fields, *, filters=None, order_by=None, limit=50, parent_doctype=None):
         if not self._doctype_exists(doctype):
             return []
         try:
@@ -1707,6 +1719,9 @@ class SalesCrmService:
                 "fields": fields,
                 "limit_page_length": limit,
             }
+            if parent_doctype:
+                # Child tables 403 for non-admins without it (and this helper hides errors).
+                kwargs["parent_doctype"] = parent_doctype
             if order_by:
                 kwargs["order_by"] = order_by
             return [dict(row) for row in self.frappe.get_list(doctype, **kwargs)]
@@ -1740,12 +1755,54 @@ class SalesCrmService:
             return 0
 
     def _names(self, doctype):
-        return [row["name"] for row in self._safe_list(doctype, ["name"], order_by="name asc", limit=500)]
+        """Dropdown option names (sources, territories, stages). Sales roles
+        often have only 'select' on these masters, which get_list rejects."""
+        if not self._doctype_exists(doctype):
+            return []
+        try:
+            return list(self.frappe.get_all(doctype, pluck="name", order_by="name asc", limit_page_length=500))
+        except Exception:
+            return []
+
+    def _attach_reference_titles(self, provider, tasks: list[dict]) -> None:
+        """Tasks show the lead/deal title, not CRM-LEAD-2026-00002. One
+        permission-checked query per reference type; failures leave the ID."""
+        for kind, normalize, fields in (
+            ("lead", provider.normalize_lead, provider.lead_fields()),
+            ("deal", provider.normalize_deal, provider.deal_fields()),
+        ):
+            names = sorted({t["reference_name"] for t in tasks if t.get("reference_kind") == kind and t.get("reference_name")})
+            if not names:
+                continue
+            doctype = provider.reference_doctype(kind)
+            rows = self._safe_list(doctype, provider.existing_fields(doctype, fields), filters=[["name", "in", names]], limit=len(names))
+            titles = {row.get("name"): normalize(row).get("title") for row in rows}
+            for task in tasks:
+                if task.get("reference_kind") == kind:
+                    task["reference_title"] = titles.get(task.get("reference_name")) or ""
+
+    def _lead_source_field(self, provider) -> str:
+        """ERPNext v15+ dropped Lead.source in favour of utm_source."""
+        if provider.config.key == "frappe_crm":
+            return "source"
+        return "source" if provider.existing_fields(provider.config.lead_doctype, ["source"]) else "utm_source"
+
+    def _lead_source_doctype(self, provider) -> str:
+        if provider.config.key == "frappe_crm":
+            return "CRM Lead Source"
+        return "Lead Source" if self._doctype_exists("Lead Source") else "UTM Source"
 
     def _sales_users(self):
-        rows = self._safe_list("Has Role", ["parent", "role"], filters=[["role", "in", ["Sales User", "Sales Manager"]]], limit=1000)
+        rows = self._safe_list("Has Role", ["parent", "role"], filters=[["role", "in", ["Sales User", "Sales Manager"]], ["parenttype", "=", "User"]], limit=1000, parent_doctype="User")
         names = sorted({row.get("parent") for row in rows if row.get("parent")})
-        return [{"name": name, "label": name} for name in names]
+        labels = {}
+        for name in names:
+            try:
+                full = self.frappe.utils.get_fullname(name)
+            except Exception:
+                full = None
+            labels[name] = full if isinstance(full, str) and full else name
+        return [{"name": name, "label": labels[name]} for name in names]
 
     def _installed_apps(self) -> set[str]:
         try:
@@ -1759,6 +1816,8 @@ class SalesCrmService:
     def _doctype_exists(self, doctype):
         try:
             result = self.frappe.db.exists("DocType", doctype)
+            if result is None:  # frappe returns None for a missing doctype
+                return False
             return bool(result) if isinstance(result, bool | int | str) else True
         except Exception:
             return True

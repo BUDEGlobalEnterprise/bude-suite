@@ -176,7 +176,7 @@ def test_kpi_summary_uses_cache_and_rolls_up_standard_doctypes(mock_frappe):
             ]
         if doctype == "Stock Ledger Entry":
             return [{"item_code": "FAST", "actual_qty": -20}]
-        if doctype == "Sales Invoice Item":
+        if doctype == "Sales Invoice":  # lines joined onto the invoice query
             return [{"item_code": "FAST", "qty": 3, "warehouse": "Stores - A"}]
         if doctype == "Delivery Note":
             return [

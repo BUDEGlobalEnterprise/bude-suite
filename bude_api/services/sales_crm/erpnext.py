@@ -24,7 +24,7 @@ class ErpnextCrmProvider(CrmProvider):
     def lead_fields(self) -> list[str]:
         return [
             "name", "lead_name", "first_name", "last_name", "company_name", "status",
-            "email_id", "mobile_no", "phone", "source", "territory", "lead_owner",
+            "email_id", "mobile_no", "phone", "source", "utm_source", "territory", "lead_owner",
             "owner", "job_title", "industry", "market_segment", "website", "notes",
             "modified", "creation",
             "do_not_contact",
@@ -35,7 +35,7 @@ class ErpnextCrmProvider(CrmProvider):
             "name", "title", "opportunity_from", "party_name", "customer_name", "status",
             "sales_stage", "probability", "opportunity_amount", "currency", "expected_closing",
             "next_contact_date", "contact_email", "contact_mobile", "opportunity_owner", "owner",
-            "source", "modified", "creation",
+            "source", "utm_source", "modified", "creation",
         ]
 
     def normalize_lead(self, row: dict) -> dict:
@@ -52,9 +52,10 @@ class ErpnextCrmProvider(CrmProvider):
             "stage": row.get("status") or "Lead",
             "email": row.get("email_id") or "",
             "phone": row.get("mobile_no") or row.get("phone") or "",
-            "source": row.get("source") or "",
+            "source": row.get("source") or row.get("utm_source") or "",
             "territory": row.get("territory") or "",
             "owner": row.get("lead_owner") or row.get("owner") or "",
+            "owner_name": self.full_name(row.get("lead_owner") or row.get("owner") or ""),
             "next_action": "",
             "do_not_contact": bool(row.get("do_not_contact")) or row.get("status") == "Do Not Contact",
             "modified": _serial(row.get("modified")),
@@ -75,13 +76,14 @@ class ErpnextCrmProvider(CrmProvider):
             "status": row.get("status") or "Open",
             "stage": row.get("sales_stage") or row.get("status") or "Open",
             "owner": row.get("opportunity_owner") or row.get("owner") or "",
+            "owner_name": self.full_name(row.get("opportunity_owner") or row.get("owner") or ""),
             "value": amount,
             "currency": row.get("currency") or "",
             "probability": probability,
             "weighted_value": round(amount * probability / 100, 2),
             "expected_close": _serial(row.get("expected_closing")),
             "next_action": _serial(row.get("next_contact_date")),
-            "source": row.get("source") or "",
+            "source": row.get("source") or row.get("utm_source") or "",
             "email": row.get("contact_email") or "",
             "phone": row.get("contact_mobile") or "",
             "modified": _serial(row.get("modified")),
@@ -110,7 +112,8 @@ class ErpnextCrmProvider(CrmProvider):
             "industry": payload.get("industry"),
             "website": payload.get("website"),
             "campaign_name": payload.get("campaign"),
-            "utm_source": payload.get("utm_source"),
+            # ERPNext v15+ keeps the lead source in utm_source.
+            "utm_source": payload.get("utm_source") or payload.get("source"),
             "utm_medium": payload.get("utm_medium"),
             "utm_campaign": payload.get("utm_campaign"),
             "external_id": payload.get("external_id"),

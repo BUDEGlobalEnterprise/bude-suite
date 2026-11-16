@@ -19,7 +19,9 @@ def item_price(
 
     price_list = (price_list or "Standard Selling").strip()
     warehouse = (warehouse or "").strip() or None
-    price_rows = frappe.get_list(
+    # Selling prices: read like ERPNext's own get_item_details, which does not need
+    # Item Price permission; the caller already passed the sales-role check.
+    price_rows = frappe.get_all(
         "Item Price",
         filters=[
             ["item_code", "=", item_code],

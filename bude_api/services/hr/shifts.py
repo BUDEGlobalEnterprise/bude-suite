@@ -201,7 +201,7 @@ def decide_shift_request(name: str, approved: bool, comment: str | None = None) 
     try:
         doc = frappe.get_doc("Shift Request", name)
         doc.status = "Approved" if _as_bool(approved) else "Rejected"
-        _apply_decision(doc, comment)
+        _apply_decision(doc, comment, submit=True)
     except frappe.PermissionError:
         frappe.db.rollback()
         return failure("You do not have permission for this action.", code="PERMISSION_DENIED")
